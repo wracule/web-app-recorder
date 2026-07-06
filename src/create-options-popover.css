@@ -1,0 +1,138 @@
+/* Desktop popover styles extracted from Create Options.html */
+
+.web-app-recorder-create-popover-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482994;
+  background: transparent;
+}
+
+.web-app-recorder-create-popover-host {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482995;
+  pointer-events: none;
+}
+
+.web-app-recorder-create-popover-host [data-testid='popover-menu-panel'] {
+  pointer-events: auto;
+}
+
+.PopoverMenu-module-popoverMenuPanel-pKSE5 {
+  position: fixed;
+  z-index: 2147482995;
+  background: #fff;
+  border: 1px solid var(--color-tertiary-200, #d0cbc6);
+  border-radius: 16px;
+  box-shadow: 0 15px 15px -15px rgba(48, 41, 33, 0.25);
+  padding: 16px;
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.PopoverMenu-module-popoverMenuPanel-pKSE5::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: var(--web-app-recorder-create-popover-arrow-top, 65px);
+  transform: translateY(-50%);
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 9px solid var(--color-tertiary-200, #d0cbc6);
+}
+
+.PopoverMenu-module-popoverMenuPanel-pKSE5::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: var(--web-app-recorder-create-popover-arrow-top, 65px);
+  transform: translateY(-50%);
+  width: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 9px solid #fff;
+}
+
+.PopoverMenu-module-header-nQ8iF {
+  display: none;
+}
+
+.PopoverMenuList-module-content-1rtZe {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.PopoverMenuList-module-section-TLY77 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.PopoverMenuList-module-sectionHeader-34BoD {
+  font-size: 11px;
+  color: var(--color-secondary-600, #172537);
+  text-transform: uppercase;
+  margin-left: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.PopoverMenuList-module-itemsGroup-17DLz {
+  display: flex;
+  flex-direction: column;
+}
+
+.PopoverMenuList-module-menuItem-1ycrq {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--color-secondary-600, #172537);
+  font-size: 14px;
+  font-weight: 400;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.PopoverMenuList-module-menuItem-1ycrq:hover {
+  background-color: var(--color-primary-100, #ffdcca);
+  text-decoration: none;
+  color: var(--color-secondary-600, #172537);
+}
+
+.PopoverMenuList-module-menuItem-1ycrq:active {
+  background-color: var(--color-primary-200, #ffb996);
+}
+
+.PopoverMenuList-module-iconWrapper-LwbOH {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 10px;
+  background-color: var(--color-primary-200, #ffb996);
+  flex-shrink: 0;
+}
+
+.PopoverMenuList-module-icon-1SVc5 {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary-600, #de5321);
+}
+
+.PopoverMenuList-module-label-2h1uI {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

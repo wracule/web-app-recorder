@@ -1,0 +1,520 @@
+/* Consensus app fills the page; recorder is a full-viewport overlay on top. */
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.consensus-app-root {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  background: #fff;
+  z-index: 0;
+}
+
+#web-app-recorder-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+}
+
+#web-app-recorder-root > * {
+  pointer-events: auto;
+}
+
+.web-app-recorder-shell-error {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483002;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #3b1212;
+  color: #fecaca;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+/* Full-page recording overlay over Consensus */
+.web-app-recorder-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  --record-workspace-bg-color: rgba(11, 11, 17, 0.76);
+  --record-workspace-bg-image:
+    linear-gradient(180deg, rgba(6, 6, 8, 0.4) 0%, rgba(8, 8, 10, 0.5) 50%, rgba(10, 8, 12, 0.6) 100%),
+    url('/images/gradient%20background.png');
+  --record-workspace-bg-size: cover, cover;
+  --record-workspace-bg-position: center, center;
+  --record-workspace-bg-repeat: no-repeat, no-repeat;
+}
+
+.web-app-recorder-overlay__gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--record-workspace-bg-color);
+  background-image: var(--record-workspace-bg-image);
+  background-size: var(--record-workspace-bg-size);
+  background-position: var(--record-workspace-bg-position);
+  background-repeat: var(--record-workspace-bg-repeat);
+  opacity: 0.95;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.web-app-recorder-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.web-app-recorder-overlay__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 32px);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.web-app-recorder-overlay__stage > * {
+  pointer-events: auto;
+}
+
+.web-app-recorder-overlay__content {
+  position: relative;
+  width: min(1038px, 100%);
+  max-width: calc(100% - 2rem);
+  max-height: calc(100vh - 4rem);
+}
+
+.web-app-recorder-overlay__content--editor {
+  width: min(1200px, 100%);
+}
+
+/* 2s preflight skeleton before full recorder UI mounts */
+.web-app-recorder-skeleton {
+  width: min(1038px, 100%);
+  max-width: calc(100% - 2rem);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.web-app-recorder-skeleton__banner {
+  width: 184px;
+  height: 16px;
+  border-radius: 999px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.16);
+  animation: web-app-recorder-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+.web-app-recorder-skeleton__chrome {
+  position: relative;
+  width: 100%;
+}
+
+.web-app-recorder-skeleton__chrome > .web-app-recorder-overlay__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transform: none;
+}
+
+.web-app-recorder-skeleton__video {
+  width: 100%;
+  min-height: min(520px, calc(100vh - 280px));
+  border-radius: 12px 12px 0 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.17) 45%,
+      rgba(255, 255, 255, 0.08) 100%
+    ),
+    #363636;
+  background-size: 180% 100%, 100% 100%;
+  animation: web-app-recorder-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.web-app-recorder-skeleton__controls {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid #575757;
+  border-radius: 0 0 12px 12px;
+  background: #363636;
+}
+
+.web-app-recorder-skeleton__controls-left,
+.web-app-recorder-skeleton__controls-center,
+.web-app-recorder-skeleton__controls-right {
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  animation: web-app-recorder-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+.web-app-recorder-skeleton__controls-center {
+  height: 46px;
+}
+
+@keyframes web-app-recorder-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes web-app-recorder-skeleton-shimmer {
+  0% {
+    background-position: 100% 0, 0 0;
+  }
+  100% {
+    background-position: -100% 0, 0 0;
+  }
+}
+
+/* Stack: banner above grey card, close outside top-right of card */
+.web-app-recorder-overlay .prototype-browser-window__record-ui-stack.web-app-recorder-overlay__stack {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  width: min(1038px, 100%);
+  max-width: calc(100% - 2rem);
+  max-height: calc(100vh - 4rem);
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.web-app-recorder-overlay__camera-banner {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.web-app-recorder-overlay__screen-hint {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.web-app-recorder-overlay__stack-message-slot {
+  margin: 0 0 10px;
+}
+
+.web-app-recorder-overlay__recorder-chrome {
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.web-app-recorder-overlay__recorder-chrome > .web-app-recorder-overlay__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transform: none;
+  z-index: 40;
+}
+
+.web-app-recorder-overlay__close {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  cursor: pointer;
+  color: #f4f6fb;
+  background: rgba(54, 54, 54, 1);
+  border: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.web-app-recorder-overlay__close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.web-app-recorder-overlay .prototype-browser-window__record-ui-recorder {
+  overflow: hidden;
+  padding: 0;
+  gap: 0;
+  width: 100%;
+}
+
+.web-app-recorder-overlay .prototype-browser-window__record-ui-stage-slot {
+  margin: 0;
+  border-radius: 12px 12px 0 0;
+  flex: 0 0 auto;
+}
+
+.web-app-recorder-overlay .prototype-browser-window__record-stage-inner {
+  border-radius: 12px 12px 0 0;
+}
+
+.web-app-recorder-overlay .prototype-browser-window__record-stage-toolbar {
+  position: relative;
+  z-index: 2147483004;
+  flex: 0 0 auto;
+}
+
+/* Video editor (post-record) — full viewport over Consensus shell */
+.web-app-recorder-editor-fullpage {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: auto;
+  pointer-events: auto;
+  background: #444444;
+}
+
+.web-app-recorder-editor-fullpage .video-editor {
+  flex: 1 1 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+/* Legacy modal editor chrome (unused when full-page editor is active) */
+.web-app-recorder-overlay__editor-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.web-app-recorder-overlay__editor-wrap > .web-app-recorder-overlay__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transform: none;
+  z-index: 40;
+}
+
+.web-app-recorder-overlay__editor {
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #10131d;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+/* Portaled mic/camera menus and tooltips must sit above the recorder overlay. */
+body .prototype-browser-window__device-menu--portaled {
+  z-index: 2147483010 !important;
+}
+
+body .prototype-browser-window__tooltip--portaled {
+  z-index: 2147483011 !important;
+}
+
+.web-app-recorder-overlay .prototype-browser-window__record-stage-controls .prototype-browser-window__device-menu {
+  z-index: 2147483005;
+}
+
+/* Floating record — default anchor top-right; draggable anywhere in viewport. */
+.web-app-recorder-fab-wrap {
+  --web-app-recorder-fab-height: 56px;
+  --web-app-recorder-fab-inset-top: 32px;
+  --web-app-recorder-fab-inset-right: 32px;
+
+  position: fixed;
+  right: var(--web-app-recorder-fab-inset-right);
+  top: var(--web-app-recorder-fab-inset-top);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.web-app-recorder-fab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--web-app-recorder-fab-height);
+  padding: 0 8px 0 22px;
+  border: 2px solid #cfcac6;
+  border-radius: 999px;
+  background: #f1efed;
+  color: #262626;
+  cursor: pointer;
+  box-shadow:
+    0 10px 24px rgba(25, 25, 25, 0.16),
+    0 2px 5px rgba(25, 25, 25, 0.12);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.web-app-recorder-fab-handle {
+  width: 20px;
+  height: 40px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #6a6661;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(8px);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-handle,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-handle,
+.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab-handle {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.web-app-recorder-fab-handle:active {
+  cursor: grabbing;
+}
+
+.web-app-recorder-fab-handle__icon {
+  font-size: 20px !important;
+  transform: rotate(0deg) !important;
+}
+
+.web-app-recorder-fab:hover {
+  box-shadow:
+    0 14px 28px rgba(25, 25, 25, 0.2),
+    0 4px 8px rgba(25, 25, 25, 0.14);
+  transform: translateY(-1px);
+}
+
+.web-app-recorder-fab:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 3px;
+}
+
+.web-app-recorder-fab:active {
+  transform: translateY(0);
+}
+
+.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab {
+  transform: none;
+}
+
+.web-app-recorder-fab__label {
+  font: 600 16px/1 'Poppins', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.web-app-recorder-fab__icon-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--color-primary-200, #ffb996);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.web-app-recorder-fab__icon {
+  font-size: 24px !important;
+  color: var(--color-secondary-500, #293748);
+}
+
+.web-app-recorder-fab__tooltip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  bottom: auto;
+  transform: translateX(-50%) translateY(-4px);
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: 500 13px/1.2 'Poppins', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.web-app-recorder-fab:hover .web-app-recorder-fab__tooltip,
+.web-app-recorder-fab:focus-visible .web-app-recorder-fab__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab__tooltip {
+  opacity: 0;
+}
