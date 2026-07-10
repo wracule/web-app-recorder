@@ -6,8 +6,11 @@ import { getShellPageFromLocation, navigateToShellPage, shellPageShowsFloatingRe
 import { VideoRecorderHost } from './VideoRecorderHost'
 import { bindCreateOptionsPopover, hideCreateOptionsPopover } from './createOptionsPopover'
 import { bindShellBridge } from './shellBridge'
+import { injectVercelToolbar } from './mountVercelToolbar'
 import './index.css'
 import './web-app-recorder.css'
+
+injectVercelToolbar()
 
 function RecorderBootstrap() {
   const [shellPageId, setShellPageId] = useState(getShellPageFromLocation)

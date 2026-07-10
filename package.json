@@ -18,6 +18,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
+    "@vercel/toolbar": "^0.2.6",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
