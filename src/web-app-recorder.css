@@ -373,19 +373,16 @@ body .prototype-browser-window__tooltip--portaled {
   z-index: 2147483005;
 }
 
-/* Floating record — default anchor top-right; draggable anywhere in viewport. */
+/* Record FAB — fixed to the top-right of the browser window. */
 .web-app-recorder-fab-wrap {
   --web-app-recorder-fab-height: 56px;
-  --web-app-recorder-fab-inset-top: 32px;
-  --web-app-recorder-fab-inset-right: 32px;
 
   position: fixed;
-  right: var(--web-app-recorder-fab-inset-right);
-  top: var(--web-app-recorder-fab-inset-top);
+  top: 0;
+  right: 32px;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .web-app-recorder-fab {
@@ -396,7 +393,9 @@ body .prototype-browser-window__tooltip--portaled {
   height: var(--web-app-recorder-fab-height);
   padding: 0 8px 0 22px;
   border: 2px solid #cfcac6;
-  border-radius: 999px;
+  border-top: 0;
+  /* Top corners flush with the viewport; 16px on the bottom. */
+  border-radius: 0 0 16px 16px;
   background: #f1efed;
   color: #262626;
   cursor: pointer;
@@ -409,48 +408,11 @@ body .prototype-browser-window__tooltip--portaled {
   font-family: 'Poppins', system-ui, sans-serif;
 }
 
-.web-app-recorder-fab-handle {
-  width: 20px;
-  height: 40px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #6a6661;
-  box-shadow: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: grab;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(8px);
-  transition:
-    opacity 0.14s ease,
-    transform 0.14s ease;
-}
-
-.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-handle,
-.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-handle,
-.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab-handle {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
-}
-
-.web-app-recorder-fab-handle:active {
-  cursor: grabbing;
-}
-
-.web-app-recorder-fab-handle__icon {
-  font-size: 20px !important;
-  transform: rotate(0deg) !important;
-}
-
 .web-app-recorder-fab:hover {
   box-shadow:
     0 14px 28px rgba(25, 25, 25, 0.2),
     0 4px 8px rgba(25, 25, 25, 0.14);
-  transform: translateY(-1px);
+  transform: translateY(1px);
 }
 
 .web-app-recorder-fab:focus-visible {
@@ -460,10 +422,6 @@ body .prototype-browser-window__tooltip--portaled {
 
 .web-app-recorder-fab:active {
   transform: translateY(0);
-}
-
-.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab {
-  transform: none;
 }
 
 .web-app-recorder-fab__label {
@@ -513,8 +471,4 @@ body .prototype-browser-window__tooltip--portaled {
 .web-app-recorder-fab:focus-visible .web-app-recorder-fab__tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-.web-app-recorder-fab-wrap.is-dragging .web-app-recorder-fab__tooltip {
-  opacity: 0;
 }
