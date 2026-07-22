@@ -436,7 +436,7 @@ body .prototype-browser-window__tooltip--portaled {
   height: 40px;
   border-radius: 50%;
   flex: 0 0 auto;
-  background: var(--color-primary-200, #ffb996);
+  background: #fc6839;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -444,7 +444,7 @@ body .prototype-browser-window__tooltip--portaled {
 
 .web-app-recorder-fab__icon {
   font-size: 24px !important;
-  color: var(--color-secondary-500, #293748);
+  color: #fff;
 }
 
 .web-app-recorder-fab__tooltip {
