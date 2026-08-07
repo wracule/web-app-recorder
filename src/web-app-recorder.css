@@ -394,12 +394,12 @@ body .prototype-browser-window__tooltip--portaled {
   justify-content: center;
   gap: 6px;
   height: var(--web-app-recorder-fab-height);
-  padding: 20px 12px 18px;
+  padding: 16px 12px 14px;
   border: 2px solid transparent;
   border-top: 0;
   /* Flush top corners; softer radius on the bottom left/right. */
   border-radius: 0 0 48px 48px;
-  background: #ff7a4a;
+  background: #343434;
   color: #fff;
   cursor: pointer;
   box-shadow:
@@ -432,7 +432,7 @@ body .prototype-browser-window__tooltip--portaled {
   font: 500 13px/1 'Poppins', system-ui, sans-serif;
   letter-spacing: 0.01em;
   white-space: nowrap;
-  color: #293748;
+  color: #fff;
   margin-top: -4px;
 }
 
@@ -442,7 +442,7 @@ body .prototype-browser-window__tooltip--portaled {
   height: 40px;
   border-radius: 50%;
   flex: 0 0 auto;
-  background: #293748;
+  background: #f77171;
   border: 0;
   box-sizing: border-box;
   display: inline-flex;
@@ -453,7 +453,7 @@ body .prototype-browser-window__tooltip--portaled {
 
 .web-app-recorder-fab__icon {
   font-size: 24px !important;
-  color: #fff;
+  color: #343434;
 }
 
 .web-app-recorder-fab__tooltip {
