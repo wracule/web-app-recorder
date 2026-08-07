@@ -6,6 +6,7 @@ import { getShellPageFromLocation, navigateToShellPage, shellPageShowsFloatingRe
 import { VideoRecorderHost } from './VideoRecorderHost'
 import { bindCreateOptionsPopover, hideCreateOptionsPopover } from './createOptionsPopover'
 import { bindShellBridge } from './shellBridge'
+import { bindMobileWorkspaceTopNav } from './mobileWorkspaceTopNav'
 import './index.css'
 import './web-app-recorder.css'
 
@@ -65,6 +66,11 @@ function RecorderBootstrap() {
       onDashboardNavigate: () => navigateToShellPage('welcome'),
     })
   }, [shellReady, openRecorder])
+
+  useEffect(() => {
+    if (!shellReady) return
+    return bindMobileWorkspaceTopNav()
+  }, [shellReady, shellPageId])
 
   return (
     <>

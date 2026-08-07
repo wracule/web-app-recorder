@@ -373,61 +373,67 @@ body .prototype-browser-window__tooltip--portaled {
   z-index: 2147483005;
 }
 
-/* Record FAB — fixed to the top-right of the browser window. */
+/* Record FAB — `right` tracks content edge in JS; 8px minimum when flush with viewport. */
 .web-app-recorder-fab-wrap {
-  --web-app-recorder-fab-height: 56px;
+  --web-app-recorder-fab-height: auto;
 
   position: fixed;
   top: 0;
-  right: 32px;
+  right: 8px;
   z-index: 2;
   display: flex;
   align-items: center;
+  overflow: visible;
 }
 
 .web-app-recorder-fab {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 6px;
   height: var(--web-app-recorder-fab-height);
-  padding: 0 8px 0 22px;
-  border: 2px solid #cfcac6;
+  padding: 20px 12px 18px;
+  border: 2px solid transparent;
   border-top: 0;
-  /* Top corners flush with the viewport; 16px on the bottom. */
-  border-radius: 0 0 16px 16px;
-  background: #f1efed;
-  color: #262626;
+  /* Flush top corners; softer radius on the bottom left/right. */
+  border-radius: 0 0 48px 48px;
+  background: #ff7a4a;
+  color: #fff;
   cursor: pointer;
   box-shadow:
     0 10px 24px rgba(25, 25, 25, 0.16),
     0 2px 5px rgba(25, 25, 25, 0.12);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease;
   font-family: 'Poppins', system-ui, sans-serif;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 .web-app-recorder-fab:hover {
   box-shadow:
     0 14px 28px rgba(25, 25, 25, 0.2),
     0 4px 8px rgba(25, 25, 25, 0.14);
-  transform: translateY(1px);
 }
 
 .web-app-recorder-fab:focus-visible {
-  outline: 2px solid #111111;
+  outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
 .web-app-recorder-fab:active {
-  transform: translateY(0);
+  box-shadow:
+    0 10px 24px rgba(25, 25, 25, 0.16),
+    0 2px 5px rgba(25, 25, 25, 0.12);
 }
 
 .web-app-recorder-fab__label {
-  font: 600 16px/1 'Poppins', system-ui, sans-serif;
+  font: 500 13px/1 'Poppins', system-ui, sans-serif;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  color: #293748;
+  margin-top: -4px;
 }
 
 .web-app-recorder-fab__icon-wrap {
@@ -436,10 +442,13 @@ body .prototype-browser-window__tooltip--portaled {
   height: 40px;
   border-radius: 50%;
   flex: 0 0 auto;
-  background: #fc6839;
+  background: #293748;
+  border: 0;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-top: 2px;
 }
 
 .web-app-recorder-fab__icon {
@@ -449,10 +458,11 @@ body .prototype-browser-window__tooltip--portaled {
 
 .web-app-recorder-fab__tooltip {
   position: absolute;
-  left: 50%;
+  left: auto;
+  right: 0;
   top: calc(100% + 10px);
   bottom: auto;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateY(-4px);
   background: #111;
   color: #fff;
   border-radius: 8px;
@@ -462,6 +472,7 @@ body .prototype-browser-window__tooltip--portaled {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
+  z-index: 3;
   transition:
     opacity 0.12s ease,
     transform 0.12s ease;
@@ -470,5 +481,223 @@ body .prototype-browser-window__tooltip--portaled {
 .web-app-recorder-fab:hover .web-app-recorder-fab__tooltip,
 .web-app-recorder-fab:focus-visible .web-app-recorder-fab__tooltip {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
+
+/* Mobile / tablet top chrome + closed left nav by default. */
+.web-app-recorder-mobile-topbar {
+  display: none;
+}
+
+.web-app-recorder-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  html.web-app-recorder-compact .web-app-recorder-mobile-topbar,
+  .web-app-recorder-mobile-topbar:not([hidden]) {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    column-gap: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    min-height: 64px;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    background-color: #293748;
+  }
+
+  .web-app-recorder-mobile-topbar[hidden] {
+    display: none !important;
+  }
+
+  /* Keep shell workspace column out of the way; we render our own top bar. */
+  #consensus-app-root [class*='workspaceNavColumn'] {
+    display: none !important;
+  }
+
+  /* Force the main left nav closed unless explicitly opened. */
+  #consensus-app-root [class*='sidebarColumn'] {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #consensus-app-root [class*='styles-module-sidebar-']:not([class*='sidebarColumn']):not([class*='sidebarHeader']),
+  #consensus-app-root [class*='_sidebar_'] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: min(320px, 86vw) !important;
+    max-width: 320px !important;
+    height: 100% !important;
+    z-index: 10001 !important;
+    transform: translateX(-105%) !important;
+    transition: transform 300ms ease !important;
+    background: #fff !important;
+    box-shadow: 8px 0 24px rgba(17, 25, 40, 0.18);
+  }
+
+  html.web-app-recorder-sidebar-open #consensus-app-root [class*='styles-module-sidebar-']:not([class*='sidebarColumn']):not([class*='sidebarHeader']),
+  html.web-app-recorder-sidebar-open #consensus-app-root [class*='_sidebar_'],
+  #consensus-app-root [class*='_sidebar_'].web-app-recorder-sidebar-open,
+  #consensus-app-root [class*='styles-module-sidebar-'].web-app-recorder-sidebar-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Make room under the fixed navy bar. */
+  #consensus-app-root [class*='appContainer'] {
+    padding-top: 64px;
+    box-sizing: border-box;
+  }
+
+  #consensus-app-root [class*='mainColumn'] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+
+  .web-app-recorder-mobile-topbar__icons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .web-app-recorder-mobile-topbar__workspace-btn {
+    flex: 0 0 auto;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background-color: #fff !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    outline: 3px solid transparent;
+    outline-offset: 0;
+    box-sizing: border-box;
+  }
+
+  .web-app-recorder-mobile-topbar__workspace-btn > span,
+  .web-app-recorder-mobile-topbar__workspace-btn [class*='_children_'] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 0;
+  }
+
+  .web-app-recorder-mobile-topbar__workspace-btn svg {
+    width: 40px !important;
+    height: 40px !important;
+    display: block;
+  }
+
+  .web-app-recorder-mobile-topbar__workspace-btn[class*='active'] {
+    outline-color: #ff8559 !important;
+    background-color: #fff !important;
+  }
+
+  .web-app-recorder-mobile-menu-btn {
+    grid-column: 1;
+    justify-self: start;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .web-app-recorder-mobile-menu-btn__bars {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 20px;
+  }
+
+  .web-app-recorder-mobile-menu-btn__bars > span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    border-radius: 1px;
+    background: #fff;
+  }
+
+  .web-app-recorder-mobile-avatar {
+    grid-column: 3;
+    justify-self: end;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #d0cbc6;
+    cursor: pointer;
+  }
+
+  .web-app-recorder-mobile-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .web-app-recorder-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: rgba(17, 25, 40, 0.45);
+    cursor: pointer;
+  }
+
+  .web-app-recorder-sidebar-backdrop--visible {
+    display: block;
+  }
+
+  /* Keep record FAB below the top bar. */
+  .web-app-recorder-fab-wrap {
+    top: 64px;
+  }
+}
+
+@media (min-width: 992px) {
+  .web-app-recorder-mobile-topbar,
+  .web-app-recorder-mobile-menu-btn,
+  .web-app-recorder-mobile-avatar,
+  .web-app-recorder-sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+
