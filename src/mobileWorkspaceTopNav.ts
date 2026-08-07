@@ -22,10 +22,10 @@ function getWorkspaceButtons(): HTMLElement[] {
 }
 
 function ensureBackdrop(): HTMLElement {
-  let backdrop = document.querySelector(`.${BACKDROP_CLASS}`)
-  if (backdrop instanceof HTMLElement) return backdrop
+  const existing = document.querySelector(`.${BACKDROP_CLASS}`)
+  if (existing instanceof HTMLElement) return existing
 
-  backdrop = document.createElement('button')
+  const backdrop = document.createElement('button')
   backdrop.type = 'button'
   backdrop.className = BACKDROP_CLASS
   backdrop.setAttribute('aria-label', 'Close navigation menu')
