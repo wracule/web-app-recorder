@@ -136,3 +136,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.web-app-recorder-create-item--screenpal:hover {
+  background-color: #d7ecf8;
+}
+
+.web-app-recorder-create-item--screenpal:active {
+  background-color: #c3e1f4;
+}
+
+.web-app-recorder-create-item--screenpal__icon {
+  background-color: #c8e6f5 !important;
+}
+
+.web-app-recorder-create-item--screenpal__icon .PopoverMenuList-module-icon-1SVc5,
+.web-app-recorder-create-item--screenpal__icon svg {
+  color: var(--color-secondary-500, #293748) !important;
+  fill: var(--color-secondary-500, #293748) !important;
+}
