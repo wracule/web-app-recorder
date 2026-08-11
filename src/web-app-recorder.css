@@ -208,65 +208,73 @@ body {
   max-height: calc(100vh - 4rem);
   margin: 0 auto;
   overflow: visible;
-}
-
-.web-app-recorder-overlay__camera-banner {
-  position: static;
-  top: auto;
-  left: auto;
-  right: auto;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  text-align: center;
-}
-
-.web-app-recorder-overlay__screen-hint {
-  position: static;
-  top: auto;
-  left: auto;
-  right: auto;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  text-align: center;
-}
-
-.web-app-recorder-overlay__stack-message-slot {
-  margin: 0 0 10px;
+  gap: 0;
+  padding-top: 4px;
 }
 
 .web-app-recorder-overlay__recorder-chrome {
   position: relative;
+  z-index: 1;
   width: 100%;
   flex: 0 0 auto;
+  /* Reserve room for the status label above the grey card */
+  padding-top: 52px;
+}
+
+.web-app-recorder-overlay__stack-message-slot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  z-index: 5;
+  min-height: 24px;
+  height: 28px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.web-app-recorder-overlay__camera-banner,
+.web-app-recorder-overlay__screen-hint {
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+}
+
+.web-app-recorder-overlay
+  .prototype-browser-window__record-ui-stack-message-slot
+  > .web-app-recorder-overlay__camera-banner.prototype-browser-window__record-ui-stack-message--active,
+.web-app-recorder-overlay
+  .prototype-browser-window__record-ui-stack-message-slot
+  > .web-app-recorder-overlay__screen-hint.prototype-browser-window__record-ui-stack-message--active {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  inset: auto;
+  opacity: 1;
 }
 
 .web-app-recorder-overlay__recorder-chrome > .web-app-recorder-overlay__close {
   position: absolute;
-  top: 8px;
+  top: calc(52px + 8px);
   right: 8px;
   transform: none;
   z-index: 40;
@@ -382,12 +390,14 @@ body .prototype-browser-window__tooltip--portaled {
   right: 8px;
   z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
   overflow: visible;
 }
 
 .web-app-recorder-fab {
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -405,10 +415,17 @@ body .prototype-browser-window__tooltip--portaled {
   box-shadow:
     0 10px 24px rgba(25, 25, 25, 0.16),
     0 2px 5px rgba(25, 25, 25, 0.12);
-  transition: box-shadow 0.15s ease;
+  transition:
+    box-shadow 0.15s ease,
+    padding-top 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   font-family: 'Poppins', system-ui, sans-serif;
   box-sizing: border-box;
   overflow: visible;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab {
+  padding-top: 24px;
 }
 
 .web-app-recorder-fab:hover {
@@ -458,30 +475,179 @@ body .prototype-browser-window__tooltip--portaled {
 
 .web-app-recorder-fab__tooltip {
   position: absolute;
-  left: auto;
-  right: 0;
-  top: calc(100% + 10px);
-  bottom: auto;
-  transform: translateY(-4px);
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
   background: #111;
   color: #fff;
   border-radius: 8px;
-  padding: 8px 10px;
-  font: 500 13px/1.2 'Poppins', system-ui, sans-serif;
+  padding: 9px 12px;
+  font: 500 13px/1.25 'Poppins', system-ui, sans-serif;
   letter-spacing: 0.01em;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.18);
   transition:
-    opacity 0.12s ease,
-    transform 0.12s ease;
+    opacity 0.14s ease,
+    transform 0.14s ease;
+}
+
+.web-app-recorder-fab__tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: #111;
 }
 
 .web-app-recorder-fab:hover .web-app-recorder-fab__tooltip,
 .web-app-recorder-fab:focus-visible .web-app-recorder-fab__tooltip {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(-50%) translateX(0);
+}
+
+.web-app-recorder-fab-flyout {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.web-app-recorder-fab-flyout__btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: #343434;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 18px rgba(25, 25, 25, 0.18),
+    0 2px 4px rgba(25, 25, 25, 0.12);
+  opacity: 0;
+  transform: translateY(-14px) scale(0.55);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.22, 1.2, 0.36, 1),
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.web-app-recorder-fab-flyout__btn:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.web-app-recorder-fab-flyout__btn:nth-child(2) {
+  transition-delay: 0ms;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout {
+  pointer-events: auto;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout__btn,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout__btn {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout__btn:nth-child(1),
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout__btn:nth-child(1) {
+  transition-delay: 40ms;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout__btn:nth-child(2),
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout__btn:nth-child(2) {
+  transition-delay: 90ms;
+}
+
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout__btn:hover,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout__btn:hover,
+.web-app-recorder-fab-wrap:hover .web-app-recorder-fab-flyout__btn:focus-visible,
+.web-app-recorder-fab-wrap:focus-within .web-app-recorder-fab-flyout__btn:focus-visible {
+  background: #3f3f3f;
+  transform: translateY(0) scale(1.14);
+  box-shadow:
+    0 10px 22px rgba(25, 25, 25, 0.22),
+    0 3px 6px rgba(25, 25, 25, 0.14);
+}
+
+.web-app-recorder-fab-flyout__btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.web-app-recorder-fab-flyout__icon {
+  font-size: 22px !important;
+}
+
+.web-app-recorder-fab-flyout__camera-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.web-app-recorder-fab-flyout__tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font: 500 13px/1.25 'Poppins', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.18);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease;
+}
+
+.web-app-recorder-fab-flyout__tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: #111;
+}
+
+.web-app-recorder-fab-flyout__btn:hover .web-app-recorder-fab-flyout__tooltip,
+.web-app-recorder-fab-flyout__btn:focus-visible .web-app-recorder-fab-flyout__tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
 /* Mobile / tablet top chrome + closed left nav by default. */

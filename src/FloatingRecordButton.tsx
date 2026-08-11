@@ -1,8 +1,13 @@
 import { useLayoutEffect, useState } from 'react'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import ScreenshotMonitorOutlinedIcon from '@mui/icons-material/ScreenshotMonitorOutlined'
+
+export type RecordLaunchMode = 'camera' | 'screen'
+
+const CAMERA_ICON_SRC = `${import.meta.env.BASE_URL}images/Record/camera-icon.png`
 
 type FloatingRecordButtonProps = {
-  onLaunch: () => void
+  onLaunch: (mode?: RecordLaunchMode) => void
   hidden?: boolean
 }
 
@@ -65,17 +70,53 @@ export function FloatingRecordButton({ onLaunch, hidden }: FloatingRecordButtonP
       <button
         type="button"
         className="web-app-recorder-fab"
-        onClick={onLaunch}
-        aria-label="Record video"
+        onClick={() => onLaunch()}
+        aria-label="Record & Share"
+        aria-haspopup="menu"
       >
         <span className="web-app-recorder-fab__label">Record</span>
         <span className="web-app-recorder-fab__icon-wrap" aria-hidden>
           <RadioButtonCheckedIcon className="web-app-recorder-fab__icon" />
         </span>
         <span className="web-app-recorder-fab__tooltip" role="tooltip">
-          Record &amp; share video
+          Record &amp; Share
         </span>
       </button>
+
+      <div className="web-app-recorder-fab-flyout" role="menu" aria-label="Record options">
+        <button
+          type="button"
+          className="web-app-recorder-fab-flyout__btn"
+          role="menuitem"
+          aria-label="Record camera"
+          onClick={() => onLaunch('camera')}
+        >
+          <img
+            className="web-app-recorder-fab-flyout__camera-icon"
+            src={CAMERA_ICON_SRC}
+            alt=""
+            width={22}
+            height={22}
+            decoding="async"
+            draggable={false}
+          />
+          <span className="web-app-recorder-fab-flyout__tooltip" role="tooltip">
+            Record camera
+          </span>
+        </button>
+        <button
+          type="button"
+          className="web-app-recorder-fab-flyout__btn"
+          role="menuitem"
+          aria-label="Record screen"
+          onClick={() => onLaunch('screen')}
+        >
+          <ScreenshotMonitorOutlinedIcon className="web-app-recorder-fab-flyout__icon" />
+          <span className="web-app-recorder-fab-flyout__tooltip" role="tooltip">
+            Record screen
+          </span>
+        </button>
+      </div>
     </div>
   )
 }

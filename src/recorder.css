@@ -996,11 +996,20 @@
 }
 
 .prototype-browser-window__record-ui-stack-message-slot {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  z-index: 5;
   width: 100%;
-  height: 20px;
-  margin: 0 0 10px;
+  min-height: 24px;
+  height: 28px;
+  margin: 0;
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .prototype-browser-window__record-ui-stack-message-slot > * {
@@ -1021,6 +1030,8 @@
 
 .prototype-browser-window__record-ui-stack-message-slot
   > .prototype-browser-window__record-ui-stack-message--active {
+  position: relative;
+  inset: auto;
   opacity: 1;
 }
 
@@ -1998,11 +2009,6 @@
 }
 
 .prototype-browser-window__record-camera-only-banner {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -34px;
-  z-index: 26;
   display: flex;
   align-items: center;
   justify-content: center;

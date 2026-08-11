@@ -1,7 +1,7 @@
 import { StrictMode, useCallback, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { loadConsensusShell } from './loadConsensusShell'
-import { FloatingRecordButton } from './FloatingRecordButton'
+import { FloatingRecordButton, type RecordLaunchMode } from './FloatingRecordButton'
 import { getShellPageFromLocation, navigateToShellPage, shellPageShowsFloatingRecord } from './shellPages'
 import { VideoRecorderHost } from './VideoRecorderHost'
 import { bindCreateOptionsPopover, hideCreateOptionsPopover } from './createOptionsPopover'
@@ -15,9 +15,11 @@ function RecorderBootstrap() {
   const [shellReady, setShellReady] = useState(false)
   const [shellError, setShellError] = useState<string | null>(null)
   const [recorderOpen, setRecorderOpen] = useState(false)
+  const [recorderInitialMode, setRecorderInitialMode] = useState<RecordLaunchMode>('camera')
   const showFloatingRecord = shellPageShowsFloatingRecord(shellPageId)
 
-  const openRecorder = useCallback(() => {
+  const openRecorder = useCallback((mode: RecordLaunchMode = 'camera') => {
+    setRecorderInitialMode(mode)
     setRecorderOpen(true)
   }, [])
 
@@ -82,7 +84,11 @@ function RecorderBootstrap() {
       {showFloatingRecord ? (
         <FloatingRecordButton onLaunch={openRecorder} hidden={recorderOpen} />
       ) : null}
-      <VideoRecorderHost open={recorderOpen} onClose={closeRecorder} />
+      <VideoRecorderHost
+        open={recorderOpen}
+        onClose={closeRecorder}
+        initialRecordMode={recorderInitialMode}
+      />
     </>
   )
 }

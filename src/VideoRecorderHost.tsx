@@ -63,9 +63,14 @@ function cameraVideoConstraintsForQuality(
 export type VideoRecorderHostProps = {
   open: boolean
   onClose: () => void
+  initialRecordMode?: 'camera' | 'screen'
 }
 
-export function VideoRecorderHost({ open, onClose }: VideoRecorderHostProps) {
+export function VideoRecorderHost({
+  open,
+  onClose,
+  initialRecordMode = 'camera',
+}: VideoRecorderHostProps) {
   const [recordOverlayActive, setRecordOverlayActive] = useState(false)
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose
@@ -455,7 +460,7 @@ export function VideoRecorderHost({ open, onClose }: VideoRecorderHostProps) {
       return
     }
 
-    setRecordInputMode('camera')
+    setRecordInputMode(initialRecordMode)
     setRecordModeVisualVisible(true)
 
     const timer = window.setTimeout(() => {
@@ -465,7 +470,7 @@ export function VideoRecorderHost({ open, onClose }: VideoRecorderHostProps) {
     }, RECORD_STAGE_REVEAL_DELAY_MS)
 
     return () => window.clearTimeout(timer)
-  }, [recordOverlayActive])
+  }, [recordOverlayActive, initialRecordMode])
 
   useEffect(() => {
     if (cameraRecordCountdown === null || cameraRecordFinalAnimate) return
@@ -953,7 +958,8 @@ export function VideoRecorderHost({ open, onClose }: VideoRecorderHostProps) {
 </div>
         ) : (
 <div className="prototype-browser-window__record-ui-stack web-app-recorder-overlay__stack">
-{recordOverlayActive && recordStageVisible && recordModeVisualVisible ? (
+<div className="web-app-recorder-overlay__recorder-chrome">
+  {recordOverlayActive && recordStageVisible && recordModeVisualVisible ? (
   <div className="prototype-browser-window__record-ui-stack-message-slot web-app-recorder-overlay__stack-message-slot">
     <div
       className={
@@ -993,7 +999,6 @@ export function VideoRecorderHost({ open, onClose }: VideoRecorderHostProps) {
     </p>
   </div>
 ) : null}
-<div className="web-app-recorder-overlay__recorder-chrome">
   {recordStageReady ? (
     <button
       type="button"
